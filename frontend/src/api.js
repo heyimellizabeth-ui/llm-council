@@ -100,7 +100,7 @@ export const api = {
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       // Keep the last (potentially incomplete) line in the buffer
-      buffer = lines.pop();
+      buffer = lines.pop() ?? '';
 
       for (const line of lines) {
         if (line.startsWith('data: ')) {
