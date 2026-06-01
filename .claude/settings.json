@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit && (*.py)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $(git rev-parse --show-toplevel) && python -m ruff check --fix \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit && (*.jsx|*.js|*.ts|*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $(git rev-parse --show-toplevel) && npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SESSION_FILE=\"$(git rev-parse --show-toplevel)/.claude/sessions/$(date +%Y%m%d).tmp\"; mkdir -p \"$(dirname $SESSION_FILE)\"; echo '[PreCompact: '\"$(date)\"'] Saving state before compaction.' >> \"$SESSION_FILE\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SESSION_FILE=\"$(git rev-parse --show-toplevel)/.claude/sessions/$(date +%Y%m%d).tmp\"; mkdir -p \"$(dirname $SESSION_FILE)\"; echo '[Session end: '\"$(date)\"']' >> \"$SESSION_FILE\""
+          }
+        ]
+      }
+    ]
+  }
+}
